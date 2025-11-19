@@ -20,6 +20,18 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Configuration
+
+The feedback playground pages expect a running FastAPI feedback service. Set the following environment variables (for example in `.env.local`) so the frontend knows where to send requests:
+
+```
+NEXT_PUBLIC_FEEDBACK_BASE_URL=http://localhost:8000
+NEXT_PUBLIC_ATOMIC_BASE_URL=http://YOUR-ATOMIC-IP:PORT
+NEXT_PUBLIC_COMPOSITE_BASE_URL=http://YOUR-COMPOSITE-IP:PORT
+```
+
+`NEXT_PUBLIC_FEEDBACK_BASE_URL` defaults to `http://localhost:8000` if omitted.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
