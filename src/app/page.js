@@ -35,20 +35,6 @@ export default function Home() {
           <p className="text-base text-slate-600 leading-relaxed">
             Ship a Hinge-inspired experience with playgrounds for match debriefs and app sentiment. Use the cards below to jump into each workflow or ping our microservices directly.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={handleGetAtomic}
-              className="px-5 py-3 rounded-full text-white font-semibold bg-gradient-to-r from-[#ff6f91] via-[#f7aef8] to-[#b983ff] shadow-lg hover:opacity-90"
-            >
-              Call Atomic Service
-            </button>
-            <button
-              onClick={handlePostComposite}
-              className="px-5 py-3 rounded-full font-semibold border border-[#2b143c] text-[#2b143c] hover:bg-[#2b143c] hover:text-white transition"
-            >
-              Call Composite Service
-            </button>
-          </div>
         </header>
 
         <section className="grid md:grid-cols-2 gap-6">
