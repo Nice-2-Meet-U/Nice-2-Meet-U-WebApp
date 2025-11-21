@@ -38,6 +38,7 @@ const initialListFilters = {
   sort: "created_at",
   order: "desc",
   limit: "10",
+  offset: "",
   cursor: "",
 };
 
@@ -127,6 +128,7 @@ export default function AppFeedbackPage() {
         sort: listFilters.sort,
         order: listFilters.order,
         limit: listFilters.limit ? Number(listFilters.limit) : undefined,
+        offset: listFilters.offset ? Number(listFilters.offset) : undefined,
         cursor: listFilters.cursor || undefined,
       };
       const data = await listAppFeedback(query);
@@ -372,6 +374,18 @@ export default function AppFeedbackPage() {
                 className={inputClass}
                 value={listFilters.limit}
                 onChange={handleInput(setListFilters)}
+              />
+            </label>
+            <label className={labelClass}>
+              Offset
+              <input
+                type="number"
+                name="offset"
+                min={0}
+                className={inputClass}
+                value={listFilters.offset}
+                onChange={handleInput(setListFilters)}
+                placeholder="0"
               />
             </label>
             <label className={labelClass}>

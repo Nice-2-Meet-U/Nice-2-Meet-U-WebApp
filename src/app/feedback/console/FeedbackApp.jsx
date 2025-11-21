@@ -1,38 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-const fetchJSON = async (path, options = {}) => {
-  const init = {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  };
-  if (init.body && typeof init.body !== "string") {
-    init.body = JSON.stringify(init.body);
-  }
-  const res = await fetch(path, init);
-  const text = await res.text();
-  if (!res.ok) {
-    const message = (() => {
-      try {
-        const parsed = JSON.parse(text);
-        return parsed?.detail || parsed?.message;
-      } catch {
-        return text || res.statusText;
-      }
-    })();
-    throw new Error(message || "Request failed");
-  }
-  if (!text) return null;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
-};
+import {
+  createAppFeedback,
+  createProfileFeedback,
+  deleteAppFeedback,
+  deleteProfileFeedback,
+  fetchAppFeedbackStats,
+  fetchProfileFeedbackStats,
+  listAppFeedback,
+  listProfileFeedback,
+  updateAppFeedback,
+  updateProfileFeedback,
+} from "../../services/api";
 
 const relativeTimeFromNow = (dateString) => {
   if (!dateString) return "";
@@ -483,7 +463,7 @@ const AppFeedbackView = ({ showToast }) => {
   const fetchStats = async () => {
     try {
       setStatsLoading(true);
-      const data = await fetchJSON("/feedback/app/stats");
+      const data = await fetchAppFeedbackStats();
       setStats({
         count: data?.count_total || 0,
         avg: data?.avg_overall || 0,
@@ -503,15 +483,16 @@ const AppFeedbackView = ({ showToast }) => {
         setItems([]);
         setNextCursor(null);
       }
-      const params = new URLSearchParams();
-      params.set("limit", 20);
-      params.set("order", "desc");
-      params.set("sort", "created_at");
-      if (cursor) params.set("cursor", cursor);
-      if (tagFilter.trim()) params.set("tags", tagFilter.trim());
-      if (minRatingFilter) params.set("min_overall", minRatingFilter);
-      const query = params.toString() ? `?${params}` : "";
-      const data = await fetchJSON(`/feedback/app${query}`);
+      const query = {
+        limit: 20,
+        order: "desc",
+        sort: "created_at",
+        cursor: cursor || undefined,
+        tags: tagFilter.trim() || undefined,
+        min_overall: minRatingFilter ? Number(minRatingFilter) : undefined,
+        search: searchQuery.trim() || undefined,
+      };
+      const data = await listAppFeedback(query);
       if (reset) {
         setItems(data?.items || []);
       } else {
@@ -564,17 +545,11 @@ const AppFeedbackView = ({ showToast }) => {
       };
 
       if (editingItem) {
-        const data = await fetchJSON(`/feedback/app/${editingItem.id}`, {
-          method: "PATCH",
-          body: payload,
-        });
+        const data = await updateAppFeedback(editingItem.id, payload);
         setItems((prev) => prev.map((item) => (item.id === data.id ? data : item)));
         showLocalToast("Feedback updated.");
       } else {
-        const data = await fetchJSON("/feedback/app", {
-          method: "POST",
-          body: payload,
-        });
+        const data = await createAppFeedback(payload);
         setItems((prev) => [data, ...prev]);
         showLocalToast("Thanks for your feedback!");
       }
@@ -584,17 +559,17 @@ const AppFeedbackView = ({ showToast }) => {
     } catch (err) {
       alert(err.message);
     }
-  };
+    };
 
-  const handleDelete = async (item) => {
-    if (!window.confirm("Delete this feedback?")) return;
-    try {
-      await fetchJSON(`/feedback/app/${item.id}`, { method: "DELETE" });
-      setItems((prev) => prev.filter((entry) => entry.id !== item.id));
-      fetchStats();
-      showLocalToast("Feedback removed");
-    } catch (err) {
-      alert(err.message);
+    const handleDelete = async (item) => {
+      if (!window.confirm("Delete this feedback?")) return;
+      try {
+        await deleteAppFeedback(item.id);
+        setItems((prev) => prev.filter((entry) => entry.id !== item.id));
+        fetchStats();
+        showLocalToast("Feedback removed");
+      } catch (err) {
+        alert(err.message);
     }
   };
 
@@ -742,17 +717,17 @@ const ProfileFeedbackView = ({ showToast }) => {
     try {
       setLoadingStats(true);
       setListLoading(true);
-      const statsParams = new URLSearchParams();
-      statsParams.set("reviewee_profile_id", revieweeId);
-      if (since) statsParams.set("since", new Date(since).toISOString());
-      const statsRes = await fetchJSON(`/feedback/profile/stats?${statsParams.toString()}`);
+      const statsRes = await fetchProfileFeedbackStats({
+        reviewee_profile_id: revieweeId,
+        since: since ? new Date(since).toISOString() : undefined,
+      });
       setStats(statsRes);
 
-      const listParams = new URLSearchParams();
-      listParams.set("reviewee_profile_id", revieweeId);
-      listParams.set("limit", 20);
-      if (since) listParams.set("since", new Date(since).toISOString());
-      const listRes = await fetchJSON(`/feedback/profile?${listParams.toString()}`);
+      const listRes = await listProfileFeedback({
+        reviewee_profile_id: revieweeId,
+        limit: 20,
+        since: since ? new Date(since).toISOString() : undefined,
+      });
       setItems(listRes?.items || []);
     } catch (err) {
       alert(err.message);
@@ -787,17 +762,11 @@ const ProfileFeedbackView = ({ showToast }) => {
       };
 
       if (editingItem) {
-        const data = await fetchJSON(`/feedback/profile/${editingItem.id}`, {
-          method: "PATCH",
-          body: payload,
-        });
+        const data = await updateProfileFeedback(editingItem.id, payload);
         setItems((prev) => prev.map((entry) => (entry.id === data.id ? data : entry)));
         showToast?.("Profile feedback updated.");
       } else {
-        const data = await fetchJSON("/feedback/profile", {
-          method: "POST",
-          body: payload,
-        });
+        const data = await createProfileFeedback(payload);
         setItems((prev) => [data, ...prev]);
         showToast?.("Profile feedback added.");
       }
@@ -812,7 +781,7 @@ const ProfileFeedbackView = ({ showToast }) => {
   const handleDelete = async (item) => {
     if (!window.confirm("Delete this feedback?")) return;
     try {
-      await fetchJSON(`/feedback/profile/${item.id}`, { method: "DELETE" });
+      await deleteProfileFeedback(item.id);
       setItems((prev) => prev.filter((entry) => entry.id !== item.id));
       showToast?.("Profile feedback deleted.");
       loadProfileData();
