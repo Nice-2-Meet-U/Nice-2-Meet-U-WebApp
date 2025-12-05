@@ -26,17 +26,25 @@ export default function GoogleCallbackPage() {
           callbackData = await authGoogleCallback(searchString);
         }
 
-        const me = await authMe();
+        let me = null;
+        try {
+          me = await authMe();
+        } catch (err) {
+          // best-effort; still redirect if callback gave us a user
+        }
+
         if (typeof window !== "undefined") {
           if (callbackData?.token) {
             localStorage.setItem("authToken", callbackData.token);
           }
-          if (me) {
-            localStorage.setItem("authUser", JSON.stringify(me));
+          const userToStore = me || callbackData?.user;
+          if (userToStore) {
+            localStorage.setItem("authUser", JSON.stringify(userToStore));
           }
         }
 
-        const fallback = me?.profile_id ? "/profile" : defaultRedirect;
+        const profileId = me?.profile_id || callbackData?.user?.profile_id;
+        const fallback = profileId ? "/profile" : defaultRedirect;
         router.replace(redirectParam || fallback);
       } catch (err) {
         setStatus({ loading: false, error: err.message || "Unable to complete Google auth." });
