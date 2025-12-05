@@ -28,9 +28,21 @@ The feedback playground pages expect a running FastAPI feedback service. Set the
 NEXT_PUBLIC_FEEDBACK_BASE_URL=http://localhost:8000
 NEXT_PUBLIC_ATOMIC_BASE_URL=http://YOUR-ATOMIC-IP:PORT
 NEXT_PUBLIC_COMPOSITE_BASE_URL=http://YOUR-COMPOSITE-IP:PORT
+NEXT_PUBLIC_USERS_BASE_URL=http://localhost:8000   # Users/auth service
+NEXT_PUBLIC_PROFILE_BASE_URL=http://localhost:8001 # Protected profiles service
 ```
 
 `NEXT_PUBLIC_FEEDBACK_BASE_URL` defaults to `http://localhost:8000` if omitted.
+
+## Auth + Protected Profile Quickstart
+
+- Visit `/auth/connect` to exercise auth flows against the Users service:
+  - Sign up (`POST /auth/signup`) and log in (`POST /auth/login`) store the returned JWT locally.
+  - “Continue with Google” links to `/auth/google`; callback handled at `/auth/google/callback` which stores `{ token, user }`.
+  - “Me” calls `/auth/me` with `Authorization: Bearer <token>` (also sends cookies).
+  - “Protected profile” calls `/profiles/me` on the profile service with the same token.
+  - “Logout” calls `/auth/logout` and clears the stored token.
+- Base URLs can be overridden via env vars above. The UI shows raw JSON responses for visibility.
 
 ## Learn More
 
