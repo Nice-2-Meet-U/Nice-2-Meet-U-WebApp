@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authGoogleCallback, authMe } from "../../../services/api";
 
+const defaultRedirect = "/onboarding";
+
 export default function GoogleCallbackPage() {
   const router = useRouter();
   const [status, setStatus] = useState({ loading: true, error: null });
@@ -34,7 +36,7 @@ export default function GoogleCallbackPage() {
           }
         }
 
-        const fallback = me?.profile_id ? "/profile" : "/onboarding";
+        const fallback = me?.profile_id ? "/profile" : defaultRedirect;
         router.replace(redirectParam || fallback);
       } catch (err) {
         setStatus({ loading: false, error: err.message || "Unable to complete Google auth." });
