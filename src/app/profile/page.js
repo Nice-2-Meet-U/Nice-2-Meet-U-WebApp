@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -181,10 +182,13 @@ export default function ProfilePage() {
                 {/* Hero photo */}
                 <div className="relative h-80 sm:h-[420px]">
                   {heroPhoto?.url ? (
-                    <img
+                    <Image
                       src={heroPhoto.url}
                       alt="Profile"
-                      className="h-full w-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 720px"
                     />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-slate-700 via-slate-800 to-slate-950 flex flex-col items-center justify-center gap-2">
@@ -233,10 +237,13 @@ export default function ProfilePage() {
                               : "border-white/10 opacity-70 hover:opacity-100"
                           }`}
                         >
-                          <img
+                          <Image
                             src={photo.url}
                             alt="Thumbnail"
-                            className="h-full w-full object-cover"
+                            fill
+                            unoptimized
+                            className="object-cover"
+                            sizes="96px"
                           />
                           {photo.is_primary && (
                             <span className="absolute bottom-1 left-1 rounded-full bg-black/60 text-[8px] px-1.5 py-0.5">

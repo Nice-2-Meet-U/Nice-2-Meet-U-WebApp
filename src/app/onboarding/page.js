@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -335,10 +336,13 @@ export default function OnboardingPage() {
               <div className="px-4 pb-4">
                 <div className="relative overflow-hidden rounded-3xl h-64 sm:h-72 bg-slate-900">
                   {primaryPhotoUrl ? (
-                    <img
+                    <Image
                       src={primaryPhotoUrl}
                       alt="Profile"
-                      className="h-full w-full object-cover"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                     />
                   ) : (
                     <div className="h-full w-full bg-gradient-to-br from-slate-700 via-slate-800 to-slate-950 flex flex-col items-center justify-center gap-2 text-xs text-slate-300">

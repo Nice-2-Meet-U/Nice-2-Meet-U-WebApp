@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authGoogleCallback, authMe } from "../../../services/api";
 
 const defaultRedirect = "/onboarding";
 
-export default function GoogleCallbackPage() {
+function GoogleCallbackPageInner() {
   const router = useRouter();
   const [status, setStatus] = useState({ loading: true, error: null });
   const searchParams = useSearchParams();
@@ -87,5 +87,19 @@ export default function GoogleCallbackPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function GoogleCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-b from-[#eef2ff] via-[#f8fbff] to-white grid place-items-center text-slate-700">
+          <p className="text-sm font-medium">Finishing OAuth…</p>
+        </div>
+      }
+    >
+      <GoogleCallbackPageInner />
+    </Suspense>
   );
 }
