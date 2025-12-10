@@ -10,6 +10,7 @@ import {
   authSignup,
   getMyProfile,
 } from "../../services/api";
+import { PROFILE_BASE_URL } from "../../services/config";
 
 const cardClass =
   "bg-white/90 border border-[#c8d4ff] rounded-3xl shadow-[0_18px_50px_rgba(61,54,122,0.14)] p-6 space-y-5 backdrop-blur";
@@ -41,6 +42,7 @@ export default function AuthConnectPage() {
   const [logoutState, setLogoutState] = useState(emptyState);
 
   const googleHref = useMemo(() => authGoogleUrl(), []);
+  const profileBase = PROFILE_BASE_URL;
 
   const storeSession = (newToken, newUser) => {
     setToken(newToken || "");
@@ -166,7 +168,7 @@ export default function AuthConnectPage() {
           </p>
           <div className="text-xs text-slate-500 flex flex-wrap gap-4">
             <span>Users base: <code className="bg-indigo-50 text-indigo-800 rounded-xl px-2 py-1">{authGoogleUrl().split("/auth")[0]}</code></span>
-            <span>Profiles base: <code className="bg-indigo-50 text-indigo-800 rounded-xl px-2 py-1">{process.env.NEXT_PUBLIC_PROFILE_BASE_URL || "http://localhost:8001"}</code></span>
+            <span>Profiles base: <code className="bg-indigo-50 text-indigo-800 rounded-xl px-2 py-1">{profileBase}</code></span>
           </div>
           {token ? (
             <div className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-2xl px-3 py-2 inline-flex items-center gap-2">

@@ -1,10 +1,6 @@
-// TODO: Update these URLs to point at your deployed microservices.
-const ATOMIC_BASE_URL = process.env.NEXT_PUBLIC_ATOMIC_BASE_URL || "http://YOUR-ATOMIC-IP:PORT";
-const COMPOSITE_BASE_URL = process.env.NEXT_PUBLIC_COMPOSITE_BASE_URL || "http://YOUR-COMPOSITE-IP:PORT";
-const FEEDBACK_BASE_URL = process.env.NEXT_PUBLIC_FEEDBACK_BASE_URL || "http://localhost:8000";
-const USER_BASE_URL = process.env.NEXT_PUBLIC_USER_BASE_URL || "http://localhost:8001";
-const USERS_AUTH_BASE_URL = process.env.NEXT_PUBLIC_USERS_BASE_URL || process.env.NEXT_PUBLIC_USER_BASE_URL || "http://localhost:8000";
-const PROFILE_SERVICE_BASE_URL = process.env.NEXT_PUBLIC_PROFILE_BASE_URL || "http://localhost:8001";
+import { FEEDBACK_BASE_URL, USER_BASE_URL, PROFILE_BASE_URL } from "./config";
+
+const AUTH_BASE_URL = USER_BASE_URL;
 
 async function request(path, { method = "GET", body, headers = {}, query } = {}) {
   const url = new URL(path, FEEDBACK_BASE_URL);
@@ -98,24 +94,6 @@ function requestFrom(
   });
 }
 
-// Example: GET call to atomic microservice
-export async function fetchAtomic() {
-  const res = await fetch(`${ATOMIC_BASE_URL}/resource`, {
-    method: "GET",
-  });
-  return res.json();
-}
-
-// Example: POST call to composite microservice
-export async function sendCompositeData(payload) {
-  const res = await fetch(`${COMPOSITE_BASE_URL}/composite`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.json();
-}
-
 // Profile (match) feedback endpoints
 export function createProfileFeedback(payload) {
   return request("/feedback/profile", { method: "POST", body: payload });
@@ -185,22 +163,22 @@ export function getFeedbackJob(jobId) {
 
 // Auth (Users service)
 export function authSignup(payload) {
-  return requestFrom(USERS_AUTH_BASE_URL, "/auth/signup", { method: "POST", body: payload, includeCredentials: true });
+  return requestFrom(AUTH_BASE_URL, "/auth/signup", { method: "POST", body: payload, includeCredentials: true });
 }
 
 export function authLogin(payload) {
-  return requestFrom(USERS_AUTH_BASE_URL, "/auth/login", { method: "POST", body: payload, includeCredentials: true });
+  return requestFrom(AUTH_BASE_URL, "/auth/login", { method: "POST", body: payload, includeCredentials: true });
 }
 
 export function authMe(token) {
-  return requestFrom(USERS_AUTH_BASE_URL, "/auth/me", {
+  return requestFrom(AUTH_BASE_URL, "/auth/me", {
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     includeCredentials: true,
   });
 }
 
 export function authLogout(token) {
-  return requestFrom(USERS_AUTH_BASE_URL, "/auth/logout", {
+  return requestFrom(AUTH_BASE_URL, "/auth/logout", {
     method: "POST",
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     includeCredentials: true,
@@ -208,16 +186,16 @@ export function authLogout(token) {
 }
 
 export function authGoogleUrl() {
-  return `${USERS_AUTH_BASE_URL.replace(/\/$/, "")}/auth/google`;
+  return `${AUTH_BASE_URL.replace(/\/$/, "")}/auth/google`;
 }
 
 export function authGoogleCallback(searchParams) {
   const path = `/auth/google/callback${searchParams ? `?${searchParams}` : ""}`;
-  return requestFrom(USERS_AUTH_BASE_URL, path, { includeCredentials: true });
+  return requestFrom(AUTH_BASE_URL, path, { includeCredentials: true });
 }
 
 export function getMyProfile(token) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/profiles/me", {
+  return requestFrom(PROFILE_BASE_URL, "/profiles/me", {
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     includeCredentials: true,
     useAuthToken: true,
@@ -226,7 +204,7 @@ export function getMyProfile(token) {
 
 // Profile microservice
 export function createProfile(payload) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/profiles", {
+  return requestFrom(PROFILE_BASE_URL, "/profiles", {
     method: "POST",
     body: payload,
     includeCredentials: true,
@@ -235,14 +213,14 @@ export function createProfile(payload) {
 }
 
 export function getProfile(profileId) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, `/profiles/${profileId}`, {
+  return requestFrom(PROFILE_BASE_URL, `/profiles/${profileId}`, {
     includeCredentials: true,
     useAuthToken: true,
   });
 }
 
 export function updateProfile(profileId, payload) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/profiles/me", {
+  return requestFrom(PROFILE_BASE_URL, "/profiles/me", {
     method: "PUT",
     body: payload,
     includeCredentials: true,
@@ -251,7 +229,7 @@ export function updateProfile(profileId, payload) {
 }
 
 export function deleteProfile() {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/profiles/me", {
+  return requestFrom(PROFILE_BASE_URL, "/profiles/me", {
     method: "DELETE",
     includeCredentials: true,
     useAuthToken: true,
@@ -259,7 +237,7 @@ export function deleteProfile() {
 }
 
 export function listProfiles(params = {}) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/profiles", {
+  return requestFrom(PROFILE_BASE_URL, "/profiles", {
     query: params,
     includeCredentials: true,
     useAuthToken: true,
@@ -268,7 +246,7 @@ export function listProfiles(params = {}) {
 
 // User microservice: photos
 export function createPhoto(payload) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/photos", {
+  return requestFrom(PROFILE_BASE_URL, "/photos", {
     method: "POST",
     body: payload,
     includeCredentials: true,
@@ -277,14 +255,14 @@ export function createPhoto(payload) {
 }
 
 export function getPhoto(photoId) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, `/photos/${photoId}`, {
+  return requestFrom(PROFILE_BASE_URL, `/photos/${photoId}`, {
     includeCredentials: true,
     useAuthToken: true,
   });
 }
 
 export function updatePhoto(photoId, payload) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, `/photos/${photoId}`, {
+  return requestFrom(PROFILE_BASE_URL, `/photos/${photoId}`, {
     method: "PATCH",
     body: payload,
     includeCredentials: true,
@@ -293,7 +271,7 @@ export function updatePhoto(photoId, payload) {
 }
 
 export function deletePhoto(photoId) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, `/photos/${photoId}`, {
+  return requestFrom(PROFILE_BASE_URL, `/photos/${photoId}`, {
     method: "DELETE",
     includeCredentials: true,
     useAuthToken: true,
@@ -301,7 +279,7 @@ export function deletePhoto(photoId) {
 }
 
 export function listPhotos(params = {}) {
-  return requestFrom(PROFILE_SERVICE_BASE_URL, "/photos", {
+  return requestFrom(PROFILE_BASE_URL, "/photos", {
     query: params,
     includeCredentials: true,
     useAuthToken: true,

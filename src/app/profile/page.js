@@ -12,6 +12,7 @@ import {
   listPhotos,
   updateProfile,
 } from "../services/api";
+import { PROFILE_BASE_URL } from "../services/config";
 
 const inputClass =
   "mt-1 h-10 rounded-2xl border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-inner shadow-slate-100 focus:outline-none focus:ring-2 focus:ring-pink-200 w-full";
@@ -38,13 +39,7 @@ function formatDateTime(value) {
 export default function ProfilePage() {
   const router = useRouter();
 
-  const apiBase = useMemo(
-    () =>
-      process.env.NEXT_PUBLIC_PROFILE_BASE_URL ||
-      process.env.NEXT_PUBLIC_USER_BASE_URL ||
-      "http://localhost:8001",
-    []
-  );
+  const apiBase = PROFILE_BASE_URL;
 
   const [authState, setAuthState] = useState({ checking: true, error: null });
 

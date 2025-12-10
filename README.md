@@ -22,17 +22,13 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Configuration
 
-The feedback playground pages expect a running FastAPI feedback service. Set the following environment variables (for example in `.env.local`) so the frontend knows where to send requests:
+The frontend requires build-time environment variables (for example in `.env.local`). All are mandatory; the build will fail if any are missing:
 
 ```
-NEXT_PUBLIC_FEEDBACK_BASE_URL=http://localhost:8000
-NEXT_PUBLIC_ATOMIC_BASE_URL=http://YOUR-ATOMIC-IP:PORT
-NEXT_PUBLIC_COMPOSITE_BASE_URL=http://YOUR-COMPOSITE-IP:PORT
-NEXT_PUBLIC_USERS_BASE_URL=http://localhost:8000   # Users/auth service
-NEXT_PUBLIC_PROFILE_BASE_URL=http://localhost:8001 # Protected profiles service
+NEXT_PUBLIC_FEEDBACK_BASE_URL=<https://your-feedback-service>
+NEXT_PUBLIC_USER_BASE_URL=<https://your-user-service>
+NEXT_PUBLIC_PROFILE_BASE_URL=<https://your-profile-service>
 ```
-
-`NEXT_PUBLIC_FEEDBACK_BASE_URL` defaults to `http://localhost:8000` if omitted.
 
 ## Auth + Protected Profile Quickstart
 

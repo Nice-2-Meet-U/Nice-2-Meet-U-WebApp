@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   createProfileFeedback,
   listProfileFeedback,
   fetchProfileFeedbackStats,
 } from "../../services/api";
+import { FEEDBACK_BASE_URL } from "../../services/config";
 
 const ratingOptions = [1, 2, 3, 4, 5];
 const badgeClass =
@@ -175,7 +176,7 @@ export default function MatchFeedbackPage() {
     }
   };
 
-  const apiBase = useMemo(() => process.env.NEXT_PUBLIC_FEEDBACK_BASE_URL || "http://localhost:8000", []);
+  const apiBase = FEEDBACK_BASE_URL;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f4f0ea] to-[#ece7de] py-10 px-4 sm:px-8 text-slate-800">

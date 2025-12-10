@@ -1,6 +1,9 @@
+const phase = process.env.NEXT_PHASE;
+const isProdBuild = phase === "phase-production-build";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  output: isProdBuild ? "export" : undefined,
   trailingSlash: true,
 };
 

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { createAppFeedback, listAppFeedback, fetchAppFeedbackStats } from "../../services/api";
+import { FEEDBACK_BASE_URL } from "../../services/config";
 
 const ratings = [1, 2, 3, 4, 5];
 const badgeClass =
@@ -88,7 +89,7 @@ export default function AppFeedbackPage() {
     setter((prev) => ({ ...prev, [name]: value }));
   };
 
-  const apiBase = useMemo(() => process.env.NEXT_PUBLIC_FEEDBACK_BASE_URL || "http://localhost:8000", []);
+  const apiBase = FEEDBACK_BASE_URL;
 
   const handleCreate = async (event) => {
     event.preventDefault();

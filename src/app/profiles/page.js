@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   createPhoto,
   createProfile,
@@ -17,6 +17,7 @@ import {
   updateProfile,
   updateVisibility,
 } from "../services/api";
+import { PROFILE_BASE_URL } from "../services/config";
 
 const cardClass =
   "bg-white/90 border border-[#c8d4ff] rounded-3xl shadow-[0_18px_50px_rgba(61,54,122,0.14)] p-6 space-y-5 backdrop-blur";
@@ -120,10 +121,7 @@ function parseBool(value) {
 }
 
 export default function ProfilesPage() {
-  const apiBase = useMemo(
-    () => process.env.NEXT_PUBLIC_USER_BASE_URL || "http://localhost:8001",
-    []
-  );
+  const apiBase = PROFILE_BASE_URL;
 
   const [profileCreate, setProfileCreate] = useState(initialProfileCreate);
   const [profileCreateState, setProfileCreateState] = useState(emptyState);

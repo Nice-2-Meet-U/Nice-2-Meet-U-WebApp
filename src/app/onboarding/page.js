@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   authMe,
@@ -12,6 +12,7 @@ import {
   listPhotos,
   updateProfile,
 } from "../services/api";
+import { PROFILE_BASE_URL } from "../services/config";
 
 const labelClass =
   "flex flex-col gap-1 text-xs sm:text-sm font-semibold text-slate-900 w-full";
@@ -128,13 +129,7 @@ export default function OnboardingPage() {
   });
 
   const router = useRouter();
-  const apiBase = useMemo(
-    () =>
-      process.env.NEXT_PUBLIC_PROFILE_BASE_URL ||
-      process.env.NEXT_PUBLIC_USER_BASE_URL ||
-      "http://localhost:8001",
-    []
-  );
+  const apiBase = PROFILE_BASE_URL;
 
   useEffect(() => {
     const verifyAndLoad = async () => {
