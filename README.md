@@ -22,7 +22,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Configuration
 
-The frontend requires build-time environment variables (for example in `.env.local`). All are mandatory; the build will fail if any are missing:
+The frontend reads these build-time environment variables (for example in `.env.local`). `NEXT_PUBLIC_FEEDBACK_BASE_URL` defaults to `http://localhost:8000` in development; the others are required in all environments (production builds will fail if they are missing):
 
 ```
 NEXT_PUBLIC_FEEDBACK_BASE_URL=<https://your-feedback-service>
@@ -39,6 +39,13 @@ NEXT_PUBLIC_PROFILE_BASE_URL=<https://your-profile-service>
   - “Protected profile” calls `/profiles/me` on the profile service with the same token.
   - “Logout” calls `/auth/logout` and clears the stored token.
 - Base URLs can be overridden via env vars above. The UI shows raw JSON responses for visibility.
+
+### Google OAuth callback gotchas
+
+- The frontend never controls the callback host; Google redirects to whatever your backend advertises at `/auth/google`. Make sure the backend env var (for example `GOOGLE_REDIRECT_URI`) is set to `https://nice2meetu.me/auth/google/callback` without a port in production.
+- In Google Cloud Console, the Authorized redirect URI must match exactly: `https://nice2meetu.me/auth/google/callback`.
+- `NEXT_PUBLIC_USER_BASE_URL` should also point to `https://nice2meetu.me` (no `:8000`) so the login button calls the correct backend host.
+- If you still see a port (e.g., `:8000`) in the redirect URL, the backend process is still reading an old env value—check the runtime logs/env and redeploy with the corrected value.
 
 ## Learn More
 
