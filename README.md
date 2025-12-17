@@ -16,7 +16,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Configuration
 
-The frontend reads these build-time environment variables (for example in `.env.local`). `NEXT_PUBLIC_FEEDBACK_BASE_URL` defaults to `http://localhost:8000` in development; the others are required in all environments (production builds will fail if they are missing):
+The frontend reads these build-time environment variables (for example in `.env.local`). All three are required in every environment and must be `https://` URLs—builds will fail if they are missing or malformed:
 
 ```
 NEXT_PUBLIC_FEEDBACK_BASE_URL=<https://your-feedback-service>

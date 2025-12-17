@@ -14,7 +14,7 @@ A simple web interface for the User Match microservices.
 
 ### Prerequisites
 
-- The backend API must be running (default: `http://localhost:8000`)
+- The backend API must be reachable at the URL you configure (`API_BASE_URL`)
 - A modern web browser
 - CORS must be enabled on the backend
 
@@ -69,10 +69,10 @@ Simply open `index.html` directly in your browser (may have CORS limitations).
 Update the API base URL in `app.js`:
 
 ```javascript
-const API_BASE_URL = 'http://localhost:8000'; // Change to your deployed URL
+const API_BASE_URL = 'https://your-api.example.com'; // Change to your deployed URL
 ```
 
-For production deployment, update this to your actual API endpoint:
+For production deployment, point this to your actual API endpoint:
 ```javascript
 const API_BASE_URL = 'https://matches-service-870022169527.us-central1.run.app';
 ```
@@ -121,7 +121,7 @@ The frontend interacts with these endpoints:
 If you see CORS errors in the browser console, make sure you've added the CORS middleware to your backend as described above.
 
 ### Connection Refused
-Make sure your backend API is running on the configured port (default: 8000).
+Make sure your backend API is running on the configured host and port you set in `API_BASE_URL`.
 
 ### Invalid UUID Format
 Use the "Generate New UUID" button to create valid UUIDs, or ensure your manual UUIDs follow the standard format.

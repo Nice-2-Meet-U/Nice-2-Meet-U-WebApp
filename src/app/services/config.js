@@ -1,5 +1,3 @@
-const DEV_FEEDBACK_FALLBACK = "https://feedback.nice2meetu.me";
-
 function requireEnv(value, name) {
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
@@ -7,18 +5,14 @@ function requireEnv(value, name) {
   return value;
 }
 
-function resolveFeedbackBaseUrl() {
-  const fromEnv = process.env.NEXT_PUBLIC_FEEDBACK_BASE_URL;
-  if (fromEnv) return fromEnv;
-
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Missing required environment variable: NEXT_PUBLIC_FEEDBACK_BASE_URL");
+function requireHttpsEnv(name) {
+  const value = requireEnv(process.env[name], name);
+  if (!value.startsWith("https://")) {
+    throw new Error(`Invalid ${name}: must start with "https://"`);
   }
-
-  // Development-only fallback so local dev works without manual env setup.
-  return DEV_FEEDBACK_FALLBACK;
+  return value;
 }
 
-export const FEEDBACK_BASE_URL = resolveFeedbackBaseUrl();
-export const USER_BASE_URL = requireEnv(process.env.NEXT_PUBLIC_USER_BASE_URL, "NEXT_PUBLIC_USER_BASE_URL");
-export const PROFILE_BASE_URL = requireEnv(process.env.NEXT_PUBLIC_PROFILE_BASE_URL, "NEXT_PUBLIC_PROFILE_BASE_URL");
+export const FEEDBACK_BASE_URL = requireHttpsEnv("NEXT_PUBLIC_FEEDBACK_BASE_URL");
+export const USER_BASE_URL = requireHttpsEnv("NEXT_PUBLIC_USER_BASE_URL");
+export const PROFILE_BASE_URL = requireHttpsEnv("NEXT_PUBLIC_PROFILE_BASE_URL");
