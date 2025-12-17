@@ -6,7 +6,8 @@ function requireEnv(value, name) {
 }
 
 function requireHttpsEnv(name) {
-  const value = requireEnv(process.env[name], name);
+  const raw = requireEnv(process.env[name], name);
+  const value = raw.trim();
   if (!value.startsWith("https://")) {
     throw new Error(`Invalid ${name}: must start with "https://"`);
   }
