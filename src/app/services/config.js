@@ -1,4 +1,4 @@
-const DEV_FEEDBACK_FALLBACK = "http://localhost:8000";
+const DEV_FEEDBACK_FALLBACK = "https://feedback.nice2meetu.me";
 
 function requireEnv(value, name) {
   if (!value) {
